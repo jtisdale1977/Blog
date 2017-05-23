@@ -1,0 +1,287 @@
+﻿@using Blog.Models
+@using PagedList;
+@using PagedList.Mvc;
+@using Microsoft.AspNet.Identity
+@model IPagedList<Blog.Models.BlogPosts>
+
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Tiz's BlogStar</title>
+    <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css">
+    <link href="~/css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <script src="~/js/jquery.min.js"></script>
+    <!-- end nav -->
+    <script src="~/js/login.js"></script>
+    <script src="~/js/modernizr.custom.js"></script>
+    <!---starrt-bx-slider---->
+    <!-- bxSlider Javascript file -->
+    <script src="~/js/jquery.bxslider.min.js"></script>
+    <!-- bxSlider CSS file -->
+    <link href="~/css/jquery.bxslider.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            $('.bxslider').bxSlider();
+        });
+    </script>
+    <script>
+        $(document).ready(function setbg(color) {
+            document.getElementById("styled").style.background = color
+        });
+        $('textarea').autoResize();
+    </script>
+    <!---End-bx-slider---->
+    <!----Calender -------->
+    <link rel="stylesheet" href="~/css/clndr.css" type="text/css" />
+    <script src="~/js/underscore-min.js"></script>
+    <script src="~/js/moment-2.2.1.js"></script>
+    <script src="~/js/clndr.js"></script>
+    <script src="~/js/site.js"></script>
+    <!----End Calender -------->
+</head>
+<body>
+    <!---strat-wrap---->
+    <div class="wrap">
+        <!---start-top-nav---->
+        <div class="top-nav">
+            <div class="menu1">
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <ul class="menu2">
+                        <li>
+                            <a class="nav-icon" href=""> </a>
+                            <ul>
+                                <li>
+                                    <a class="root-nav1" href="javascript:void(0);">Blog Posts (Admin)</a>
+                                    <ul>
+                                        <li>@Html.ActionLink("Index", "Index", "BlogPosts")</li>
+                                        <li>@Html.ActionLink("Create", "Create", "BlogPosts")</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="root-nav2" href="javascript:void(0);">Comments (Admin)</a>
+                                    <ul>
+                                        <li>@Html.ActionLink("Index", "Index", "Comments")</li>
+                                        <li>@Html.ActionLink("Create", "Create", "Comments")</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+
+                @if (User.IsInRole("Moderator"))
+                {
+                    <ul class="menu2">
+                        <li>
+                            <a class="nav-icon" href=""> </a>
+                            <ul>
+                                <li>
+                                    <a class="root-nav1" href="javascript:void(0);">Comments (Admin)</a>
+                                    <ul>
+                                        <li>@Html.ActionLink("Index", "Index", "Comments")</li>
+                                        <li>@Html.ActionLink("Create", "Create", "Comments")</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+
+            </div>
+            <div class="top-nav_right">
+                <div class="menu">
+                    <!-- start top-nav-->
+                    <div class="cssmenu">
+                        <ul>
+                            <li class="last active">@Html.ActionLink("Home", "Index", "Home")</li>
+                            <li>@Html.ActionLink("Blogs", "Index", "Home")</li>
+                            <li><a href="http://jtisdale-portfolio.azurewebsites.net/" target="blank"><span>About</span></a></li>
+                            <li class="last"><a href="https://www.linkedin.com/in/justin-tisdale-9b889911a/" target="blank"><span>Contact</span></a></li>
+                            <li class="has-sub">
+                                <a href="javascript:void(0);"><span>Shop</span></a>
+                                <ul>
+                                    <li class="has-sub"><a href="http://jtisdale-shoppingcart.azurewebsites.net/" target="blank"><span>Hardened Concepts</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!-- start search-->
+                <!-- start social icons -->
+                <div class="soc_right">
+
+                </div>
+            </div>
+            @using (Html.BeginForm("Search", "Home", FormMethod.Get, new { @class = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="web_search">
+                    <form>
+                        <input type="text" id="searchStr" name="searchStr" value="Search.." onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search..';}"><input type="submit" value=" " />
+                    </form>
+                </div>
+            }
+            <!-- start login_box -->
+            <div class="login_box">
+                <div id="loginContainer">
+                    <a id="loginButton" class=""><span></span></a>
+                    <div id="loginBox" style="display: none;">
+
+                        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "login_box", role = "form", id = "loginForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <fieldset id="body">
+                                <fieldset>
+                                    <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="Username" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Username';}">
+                                    <span class="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+                                    <input class="form-control" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" value="Password" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}">
+                                    <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+                                    <input data-val="true" data-val-required="The Remember me? field is required." id="RememberMe" name="RememberMe" type="checkbox" value="true">
+                                    <input name="RememberMe" type="hidden" value="false">
+                                    <label for="RememberMe" align="center">Remember me?</label>
+                                </fieldset>
+                                <input type="submit" id="login" value="Log in">
+                                <a href="@Url.Action("Register", "Account")" class="btn-default" type="button" id="login">New User</a>
+                                <label for="checkbox" align="center"><i><a href="@Url.Action("ResetPassword", "Account")">Lost Password ?</a></i></label>
+                            </fieldset>
+                        }
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="clear"> </div>
+        <!---start-subscribe-box---->
+        @if (Request.IsAuthenticated || User.IsInRole("Admin"))
+        {
+            using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "subscribe-box" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="subscribe-box">
+                    <h2><span> </span>Welcome</h2>
+                    <ul class="subscribe-box">
+                        <li>
+                            <h2>
+                                Welcome To Tiz' BlogStar <b>@Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })</b>
+                                        @*<img src="@Url.Action("UserPhotos", "Home" )" style="width:160px;height:160px; background: #FFFFFF;
+                                        margin: auto;
+                                        -moz-border-radius: 60px;
+                                        border-radius: 100px;
+                                        padding: 6px;
+                                        box-shadow: 0px 0px 20px #888;" />*@
+                            </h2>
+                        </li>
+                        <li class="btn btn-default btn-lg" type="button" align="right"><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                    </ul>
+                </div>
+            }
+        }
+        <!---//End-subscribe-box---->
+
+        <div class="clear"> </div>
+
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        @Html.PagedListPager(Model, page => Url.Action("Search", new { page, search = ViewBag.search }))
+
+        @foreach (var post in Model)
+        {
+        <!---start-blog and tabs-section---->
+            <div class="blog-tabs">
+                <div class="blog-section" id="single">
+                    <div class="blog-artical">
+                        <div class="blog-artical-head">
+                            <img class="artical-img" id="img" src="@Url.Content(post.SingleBlogImg)" alt="">
+                            <ul class="artical-date">
+                                <li><a href="javascript:void(0);">@post.Created</a></li>
+                                <li><a class="text-icon" href="javascript:void(0);"> </a></li>
+                            </ul>
+                            <div class="clear"> </div>
+                        </div>
+                        <div class="artical-info">
+                            <a href="javascript:void(0);"><h4>@post.Title</h4></a>
+                            <p>@Html.Raw(post.Body)</p>
+                        </div>
+                        <div class="artical-related-info">
+                            <div class="artical-related-info-row">
+                                <ul class="artical-related-info-row-left">
+                                    <li><a class="view" href="javascript:void(0);"><span> </span>0</a></li>
+                                    <li><a class="comment-icon" href="javascript:void(0);"><span> </span>0 comments</a></li>
+                                </ul>
+                                <ul class="artical-related-info-row-right">
+                                    <li><a class="articl-readmore" href="javascript:void(0);"> </a></li>
+                                </ul>
+                                <div class="clear"> </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clear"> </div>
+
+                    @using (Html.BeginForm("Create", "Comments", FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("PostId", post.id);
+                    if (HttpContext.Current.User.Identity.IsAuthenticated)
+                    {
+                            <div class="comment-section">
+                                <div class="comment-box">
+                                    <textarea name="Body" id="Body" onfocus="this.value=''; setbg('#e5fff3');" onblur="setbg('white')">Enter your comment here...</textarea>
+                                </div>
+                            </div>
+                            <div class="clear"> </div>
+                            <br />
+
+                            <input class="btn btn-default" type="submit" value="Add Comment" />
+                        }
+                    }
+
+                    @foreach (var comment in post.Comments)
+                {
+
+                        <div class="comment-section">
+                            <div class="comment-box">
+                                <div class="comment-people-pic">
+                                    <a href="javascript:void(0);"><img src="/images/man3.jpg" alt=""></a>
+                                </div>
+                                <div class="comment-info">
+                                    <div class="comment-info-head">
+                                        <div class="comment-info-head-left">
+                                            <a href="javascript:void(0);">@comment.Author.FirstName</a>
+                                        </div>
+                                        <div class="comment-info-head-right">
+                                            <ul>
+                                                <li><a class="date-of-post" href="javascript:void(0);">@comment.Created</a></li>
+                                                <li><a class="replay" href="javascript:void(0);">Reply</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="clear"> </div>
+                                        <div class="comment-place">
+                                            <p>@comment.Body</p>
+                                        </div>
+                                        <div class="clear"> </div>
+                                    </div>
+                                </div>
+                                <div class="clear"> </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    <div class="clear"> </div>
+    <!---start-copy-right---->
+    <div class="copy-right">
+        <p>Made With Love By Justin Tisdale</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,634 @@
+@using Blog.Models
+@using Microsoft.AspNet.Identity
+@model IndexVM
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Tiz's BlogStar</title>
+    <link rel="~/stylesheet prefetch" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+    <link href="~/css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <script src="~/js/jquery.min.js"></script>
+    <!-- end nav -->
+    <script src="~/js/login.js"></script>
+    <script src="~/js/modernizr.custom.js"></script>
+    <!---starrt-bx-slider---->
+    <!-- bxSlider Javascript file -->
+    <script src="~/js/jquery.bxslider.min.js"></script>
+    <!-- bxSlider CSS file -->
+    <link href="~/css/jquery.bxslider.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function () {
+            $('.bxslider').bxSlider();
+        });
+    </script>
+    <!---End-bx-slider---->
+    <!----Calender -------->
+    <link rel="stylesheet" href="~/css/clndr.css" type="text/css" />
+    <script src="~/js/underscore-min.js"></script>
+    <script src="~/js/moment-2.2.1.js"></script>
+    <script src="~/js/clndr.js"></script>
+    <script src="~/js/site.js"></script>
+    <!----End Calender -------->
+</head>
+<body>
+    <!---strat-wrap---->
+    <div class="wrap">
+        <!---start-top-nav---->
+        <div class="top-nav">
+            <div class="menu1">
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <ul class="menu2">
+                        <li>
+                            <a class="nav-icon" href=""> </a>
+                            <ul>
+                                <li>
+                                    <a class="root-nav1" href="javascript:void(0);">Blog Posts (Admin)</a>
+                                    <ul>
+                                        <li>@Html.ActionLink("Index", "Index", "BlogPosts")</li>
+                                        <li>@Html.ActionLink("Create", "Create", "BlogPosts")</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="root-nav2" href="javascript:void(0);">Comments (Admin)</a>
+                                    <ul>
+                                        <li>@Html.ActionLink("Index", "Index", "Comments")</li>
+                                        <li>@Html.ActionLink("Create", "Create", "Comments")</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+
+                @if (User.IsInRole("Moderator"))
+                {
+                    <ul class="menu2">
+                        <li>
+                            <a class="nav-icon" href=""> </a>
+                            <ul>
+                                <li>
+                                    <a class="root-nav1" href="javascript:void(0);">Comments (Admin)</a>
+                                    <ul>
+                                        <li>@Html.ActionLink("Index", "Index", "Comments")</li>
+                                        <li>@Html.ActionLink("Create", "Create", "Comments")</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+
+            </div>
+            <div class="top-nav_right">
+                <div class="menu">
+                    <!-- start top-nav-->
+                    <div class="cssmenu">
+                        <ul>
+                            <li class="last active">@Html.ActionLink("Home", "Index", "Home")</li>
+                            <li>@Html.ActionLink("Blogs", "Index", "Home")</li>
+                            <li><a href="http://jtisdale-portfolio.azurewebsites.net/" target="blank"><span>About</span></a></li>
+                            <li class="last"><a href="https://www.linkedin.com/in/justin-tisdale-9b889911a/" target="blank"><span>Contact</span></a></li>
+                            <li class="has-sub">
+                                <a href="javascript:void(0);"><span>Shop</span></a>
+                                <ul>
+                                    <li class="has-sub"><a href="http://jtisdale-shoppingcart.azurewebsites.net/" target="blank"><span>Hardened Concepts</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <!-- start search-->
+                <!-- start social icons -->
+                <div class="soc_right">
+
+                </div>
+            </div>
+            @using (Html.BeginForm("Search", "Home", FormMethod.Get, new { @class = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="web_search">
+                    <form>
+                        <input type="text" id="searchStr" name="searchStr" value="Search.." onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search..';}"><input type="submit" value="" />
+                    </form>
+                </div>
+            }
+            <!-- start login_box -->
+            <div class="login_box">
+                <div id="loginContainer">
+                    <a id="loginButton" class=""><span></span></a>
+                    <div id="loginBox" style="display: none;">
+
+                        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "login_box", role = "form", id = "loginForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <fieldset id="body">
+                                <fieldset>
+                                    <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email" name="Email" type="text" value="Username" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Username';}">
+                                    <span class="field-validation-valid text-danger" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+                                    <input class="form-control" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" value="Password" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}">
+                                    <span class="field-validation-valid text-danger" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+                                    <br />
+                                    <br />
+                                    <p>Use Third Party Sites To Register</p>
+                                    <input data-val="true" data-val-required="The Remember me? field is required." id="RememberMe" name="RememberMe" type="checkbox" value="true">
+                                    <input name="RememberMe" type="hidden" value="false">
+                                    <label for="RememberMe" align="center">Remember me?</label>
+                                </fieldset>
+                                <input type="submit" id="login" value="Log in">
+                                <a href="@Url.Action("Register", "Account")" class="btn-default" type="button" id="login">New User</a>
+                                <label for="checkbox"><i><a href="@Url.Action("ResetPassword", "Account")" align="center">Lost Password ?</a></i></label>
+                            </fieldset>
+                        }
+
+                        <br/>
+                        <div class="social-btns">
+                            <section id="socialLoginForm">
+                                @*<button type="submit" class="btn google" id="Google" name="provider" value="Google" title="Log in using your Google account"><i class="fa fa-google"></i>G</button>
+                                <button type="submit" class="btn facebook" id="Facebook" name="provider" value="Facebook" title="Log in using your Facebook account"><i class="fa fa-facebook"></i>F</button>
+                                <button type="submit" class="btn twitter" id="LinkedIn" name="provider" value="LinkedIn" title="Log in using your LinkedIn account"><i class="fa fa-twitter"></i>L</button>*@
+                                @Html.Partial("~/Views/Account/_ExternalLoginsListPartial.cshtml", new ExternalLoginListViewModel())
+                            </section>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div class="clear"> </div>
+        <!---start-subscribe-box---->
+        @if (!Request.IsAuthenticated)
+        {
+            <div class="subscribe-box">
+                <h2>Please Register or Login To Read and/or Add Comments...</h2>
+            </div>
+        }
+        @if (Request.IsAuthenticated || User.IsInRole("Admin"))
+        {
+            using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "subscribe-box" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="subscribe-box">
+                    <h2><span> </span>Welcome</h2>
+                    <ul class="subscribe-box">
+                        <li>
+                            <h2>Welcome To Tiz' BlogStar <b>@Html.ActionLink(User.Identity.GetUserName(), "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })</b>
+                                @*<img src="@Url.Action("UserPhotos", "Home" )" style="width:160px;height:160px; background: #FFFFFF;
+                                margin: auto;
+                                -moz-border-radius: 60px;
+                                border-radius: 100px;
+                                padding: 6px;
+                                box-shadow: 0px 0px 20px #888;" />*@
+                            </h2>
+                        </li>
+                        <li class="btn btn-default btn-lg" type="button" align="right"><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                    </ul>
+                </div>
+            }
+        }
+        <!---//End-subscribe-box---->
+        <div class="clear"> </div>
+        <!---start-grids-slider---->
+        <div class="grids-slider">
+            <div class="grids-slider-grid-row1">
+                <div class="grids-slider-grid-row1-grid1" onclick="location.href='javascript:void(0);';">
+                    <p>Featured Blogs<span> </span></p>
+                </div>
+
+                <div class="grids-slider-grid-row1-slider">
+                    <!---slider-catption---->
+                    <ul class="bxslider">
+                        <li><img src="/images/SingleBlogImg/mj.jpg" /><p><label class="label1">5 Minutes of Fame</label><span>23 February,2017</span></p></li>
+                        <li><img src="/images/SingleBlogImg/java1.jpeg" /><p><label class="label1">Java Exercises</label><span>17 Januray,2017</span></p></li>
+                        <li><img src="/images/SingleBlogImg/questionmark10.jpg" /><p><label class="label1">What is MVC?</label><span>4 February,2017</span></p></li>
+                        <li><img src="/images/SingleBlogImg/oop4.png" /><p><label class="label1">Game Creation</label><span>28 January,2017</span></p></li>
+                    </ul>
+                    <!---slider-catption---->
+                </div>
+                <div class="clear"> </div>
+            </div>
+            <div class="clear"> </div>
+        </div>
+
+        @foreach (var post in Model.Posts)
+        {
+            <div class="grids-slider-grid-row2">
+                <div class="grids-slider-grid-row2-grid1">
+                    <div class="grid-img">
+                        <img src="@Url.Content(post.MediaURL)" alt="" />
+                    </div>
+                    <div class="grid-tags">
+                        <div class="grid-top-tags-qt">
+                            <a href="@Url.Action("SingleBlog", "Home", new { Slug = post.Slug })">
+                                <p>@post.Title</p>
+                            </a>
+                        </div>
+                        <div class="grid-top-tags">
+                            <ul>
+                                <li><a href="javascript:void(0);">@post.Created</a></li>
+                                @*<li><a class="cam-icon" href="javascript:void(0);"> </a></li>*@
+                            </ul>
+                            <div class="clear"> </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!---End-grids-slider---->
+        <div class="clear"> </div>
+        <!---start-blog and tabs-section---->
+        <div class="blog-tabs">
+            <div class="blog-section">
+                <div class="blog-artical">
+                    <div class="blog-artical-head">
+                        <img class="artical-img" src="/images/SingleBlogImg/mj.jpg" alt="">
+                        <ul class="artical-date">
+                            <li><a href="javascript:void(0);">23 February,2017</a></li>
+                            <li><a class="text-icon" href="javascript:void(0);"> </a></li>
+                        </ul>
+                        <div class="clear"> </div>
+                    </div>
+                    <div class="artical-info">
+                        <a href="javascript:void(0);"><h4>Coder Foundry</h4></a>
+                        <p>This is a picture of me and my instructor (Mark Jaang) as he's helping me with my Shopping Cart project. This was taken by Coder Foundry for a new campus opening up soon and Mark and I were randomly chosen. I still want to believe it was becuase we are the hottest men in the class, but I'll keep dreaming. I couldn't where I am right now without the best instructors: Jason Twichell and Mark Jaang.</p>
+                    </div>
+                    <div class="artical-related-info">
+                        <div class="artical-related-info-row">
+                            <ul class="artical-related-info-row-left">
+                                <li><a class="view" href="javascript:void(0);"><span> </span>0</a></li>
+                                <li><a class="comment-icon" href="javascript:void(0);"><span> </span>5 comments</a></li>
+                            </ul>
+                            <ul class="artical-related-info-row-right">
+                                <li><a class="articl-readmore" href="@Url.Action("Index", "BlogPosts")">Read More</a></li>
+                            </ul>
+                            <div class="clear"> </div>
+                        </div>
+                    </div>
+                </div>
+                <!---//Blog comments and news----->
+
+                <div class="clear"> </div>
+                <!---start-comment-section----->
+                <div class="comment-section">
+                    <div class="comment-box">
+                        <div class="comment-people-pic">
+                            <a href="javascript:void(0);"><img src="/images/man3.jpg" alt=""></a>
+                        </div>
+                        <div class="comment-info">
+                            <div class="comment-info-head">
+                                <div class="comment-info-head-left">
+                                    <a href="javascript:void(0);">Justin</a>
+                                </div>
+                                <div class="comment-info-head-right">
+                                    <ul>
+                                        <li><a class="date-of-post" href="javascript:void(0);">April 5, 2017</a></li>
+                                        <li><a class="replay" href="javascript:void(0);">Reply</a></li>
+                                    </ul>
+                                </div>
+                                <div class="clear"> </div>
+                                <div class="comment-place">
+                                    <p>Test #1</p>
+                                </div>
+                                <div class="clear"> </div>
+                            </div>
+                        </div>
+                        <div class="clear"> </div>
+                    </div>
+                    <div class="comment-box-replay">
+                        <div class="comment-box-replay-icon">
+                            <a href="javascript:void(0);">
+                                <img src="/images/replay.png" alt="">
+                            </a>
+                        </div><a href="javascript:void(0);">
+                        </a><div class="comment-box-replay-box">
+                            <a href="javascript:void(0);">
+                            </a><div class="comment-people-pic replay-pic">
+                                <a href="javascript:void(0);">
+                                </a><a href="javascript:void(0);"><img src="/images/woman.jpg" alt=""></a>
+                            </div>
+                            <div class="comment-info replay-comment-info">
+                                <div class="comment-info-head">
+                                    <div class="comment-info-head-left">
+                                        <a href="javascript:void(0);">Justin</a>
+                                    </div>
+                                    <div class="comment-info-head-right">
+                                        <ul>
+                                            <li><a class="date-of-post" href="javascript:void(0);">April 5, 2017</a></li>
+                                            <li><a class="replay" href="javascript:void(0);">Reply</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="clear"> </div>
+                                    <div class="comment-place">
+                                        <p>Test #2</p>
+                                    </div>
+                                    <div class="clear"> </div>
+                                </div>
+                            </div>
+                            <div class="clear"> </div>
+                        </div>
+                        <div class="clear"> </div>
+                    </div>
+                    <div class="comment-box-replay">
+                        <div class="comment-box-replay-icon">
+                            <a href="javascript:void(0);">
+                                <img src="/images/replay.png" alt="">
+                            </a>
+                        </div><a href="javascript:void(0);">
+                        </a><div class="comment-box-replay-box comment-box-replay-box-replay-to">
+                            <a href="javascript:void(0);">
+                            </a><div class="comment-people-pic replay-pic">
+                                <a href="javascript:void(0);">
+                                </a><a href="javascript:void(0);"><img src="/images/man3.jpg" alt=""></a>
+                            </div>
+                            <div class="comment-info replay-comment-info">
+                                <div class="comment-info-head">
+                                    <div class="comment-info-head-left">
+                                        <a href="javascript:void(0);">Justin</a>
+                                    </div>
+                                    <div class="comment-info-head-right">
+                                        <ul>
+                                            <li><a class="date-of-post" href="javascript:void(0);">April 5, 2017</a></li>
+                                            <li><a class="replay" href="javascript:void(0);">Reply</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="clear"> </div>
+                                    <div class="comment-place">
+                                        <p>This is my 5 minutes of fame</p>
+                                    </div>
+                                    <div class="clear"> </div>
+                                </div>
+                            </div>
+                            <div class="clear"> </div>
+                        </div>
+                        <div class="clear"> </div>
+                    </div>
+                    <div class="comment-box-replay">
+                        <div class="comment-box-replay-icon comment-box-replay-icon-right">
+                            <a href="javascript:void(0);">
+                                <img src="/images/replay-right.png" alt="">
+                            </a>
+                        </div><a href="javascript:void(0);">
+                        </a><div class="comment-box-replay-box comment-box-replay-box-left">
+                            <a href="javascript:void(0);">
+                            </a><div class="comment-people-pic replay-pic">
+                                <a href="javascript:void(0);">
+                                </a><a href="javascript:void(0);"><img src="/images/woman.jpg" alt=""></a>
+                            </div>
+                            <div class="comment-info replay-comment-info">
+                                <div class="comment-info-head">
+                                    <div class="comment-info-head-left">
+                                        <a href="javascript:void(0);">Justin</a>
+                                    </div>
+                                    <div class="comment-info-head-right">
+                                        <ul>
+                                            <li><a class="date-of-post" href="javascript:void(0);">April 5, 2017</a></li>
+                                            <li><a class="replay" href="javascript:void(0);">Reply</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="clear"> </div>
+                                    <div class="comment-place">
+                                        <p>Test #3</p>
+                                    </div>
+                                    <div class="clear"> </div>
+                                </div>
+                            </div>
+                            <div class="clear"> </div>
+                        </div>
+                        <div class="clear"> </div>
+                    </div>
+                    <div class="comment-box">
+                        <div class="comment-people-pic">
+                            <a href="javascript:void(0);"><img src="/images/man3.jpg" alt=""></a>
+                        </div>
+                        <div class="comment-info">
+                            <div class="comment-info-head">
+                                <div class="comment-info-head-left">
+                                    <a href="javascript:void(0);">Justin</a>
+                                </div>
+                                <div class="comment-info-head-right">
+                                    <ul>
+                                        <li><a class="date-of-post" href="javascript:void(0);">April 5, 2017</a></li>
+                                        <li><a class="replay" href="javascript:void(0);">Reply</a></li>
+                                    </ul>
+                                </div>
+                                <div class="clear"> </div>
+                                <div class="comment-place">
+                                    <p>I wish that 5 minutes of fame paid off!</p>
+                                </div>
+                                <div class="clear"> </div>
+                            </div>
+                        </div>
+                        <div class="clear"> </div>
+                    </div>
+                </div>
+
+            </div>
+            <!--Pop/Rec--->
+            <div class="tabs-cal-social">
+                <div class="tabs-right">
+                    <ul class="news-tabs">
+                        <li><a href="#tab1" class="active">Popular</a></li>
+                        <li><a href="#tab2">Recent</a></li>
+                    </ul>
+                    <div class="clear"> </div>
+                    <div id="tab1">
+                        @foreach (var post in Model.Posts)
+                        {
+                        <div class="latest-news-tab-grid frist-news-grid">
+                            <div class="latest-news-tab-grid-pic">
+                                <img src="@Url.Content(post.MediaURL)" alt="" />
+                            </div>
+                            <div class="latest-news-tab-grid-info">
+                                <a href="@Url.Action("SingleBlog", "Home", new { Slug = post.Slug })"></a>
+                                <p>@post.Title</p>
+                            </div>
+                            <div class="clear"> </div>
+                        </div>
+                        }
+                    </div>
+                    <div class="clear"> </div>
+                    <div id="tab2">
+                        @foreach (var post in Model.Posts)
+                        {
+                        <div class="latest-news-tab-grid second-news-grid">
+                            <div class="latest-news-tab-grid-pic">
+                                <img src="@Url.Content(post.MediaURL)" alt="" />
+                            </div>
+                            <div class="latest-news-tab-grid-info">
+                                <a href="@Url.Action("SingleBlog", "Home", new { Slug = post.Slug })"></a>
+                                <p>@post.Title</p>
+                            </div>
+                            <div class="clear"> </div>
+                        </div>
+                        }
+                    </div>
+                    <div class="clear"> </div>
+                    <!---tabs-script----->
+                    <script>
+                        // Wait until the DOM has loaded before querying the document
+                        $(document).ready(function () {
+                            $('ul.news-tabs').each(function () {
+                                // For each set of tabs, we want to keep track of
+                                // which tab is active and it's associated content
+                                var $active, $content, $links = $(this).find('a');
+                                // If the location.hash matches one of the links, use that as the active tab.
+                                // If no match is found, use the first link as the initial active tab.
+                                $active = $($links.filter('[href="' + location.hash + '"]')[0] || $links[0]);
+                                $active.addClass('active');
+                                $content = $($active.attr('href'));
+                                // Hide the remaining content
+                                $links.not($active).each(function () {
+                                    $($(this).attr('href')).hide();
+                                });
+                                // Bind the click event handler
+                                $(this).on('click', 'a', function (e) {
+                                    // Make the old tab inactive.
+                                    $active.removeClass('active');
+                                    $content.hide();
+                                    // Update the variables with the new link and content
+                                    $active = $(this);
+                                    $content = $($(this).attr('href'));
+                                    // Make the tab active.
+                                    $active.addClass('active');
+                                    $content.show();
+                                    // Prevent the anchor's default click action
+                                    e.preventDefault();
+                                });
+                            });
+                        });
+                    </script>
+                    <!---//tabs-script----->
+
+                </div>
+                <!---//End-blog and tabs-section---->
+                <!---start-calender---->
+                <div class="column_right_grid calender">
+                    <div class="cal1"><div class="clndr"><div class="clndr-controls"><div class="clndr-control-button"><p class="clndr-previous-button">previous</p></div><div class="month">December 2013</div><div class="clndr-control-button rightalign"><p class="clndr-next-button">next</p></div></div><table class="clndr-table" border="0" cellspacing="0" cellpadding="0"><tbody><tr><td class="day past calendar-day-2013-12-01"><div class="day-contents">1</div></td><td class="day past calendar-day-2013-12-02"><div class="day-contents">2</div></td><td class="day past calendar-day-2013-12-03"><div class="day-contents">3</div></td><td class="day past calendar-day-2013-12-04"><div class="day-contents">4</div></td><td class="day past calendar-day-2013-12-05"><div class="day-contents">5</div></td><td class="day past calendar-day-2013-12-06"><div class="day-contents">6</div></td><td class="day past calendar-day-2013-12-07"><div class="day-contents">7</div></td></tr><tr><td class="day past calendar-day-2013-12-08"><div class="day-contents">8</div></td><td class="day past calendar-day-2013-12-09"><div class="day-contents">9</div></td><td class="day past event calendar-day-2013-12-10"><div class="day-contents">10</div></td><td class="day past event calendar-day-2013-12-11"><div class="day-contents">11</div></td><td class="day past event calendar-day-2013-12-12"><div class="day-contents">12</div></td><td class="day past event calendar-day-2013-12-13"><div class="day-contents">13</div></td><td class="day past event calendar-day-2013-12-14"><div class="day-contents">14</div></td></tr><tr><td class="day past calendar-day-2013-12-15"><div class="day-contents">15</div></td><td class="day past calendar-day-2013-12-16"><div class="day-contents">16</div></td><td class="day past calendar-day-2013-12-17"><div class="day-contents">17</div></td><td class="day past calendar-day-2013-12-18"><div class="day-contents">18</div></td><td class="day past calendar-day-2013-12-19"><div class="day-contents">19</div></td><td class="day past calendar-day-2013-12-20"><div class="day-contents">20</div></td><td class="day past event calendar-day-2013-12-21"><div class="day-contents">21</div></td></tr><tr><td class="day past event calendar-day-2013-12-22"><div class="day-contents">22</div></td><td class="day past event calendar-day-2013-12-23"><div class="day-contents">23</div></td><td class="day today calendar-day-2013-12-24"><div class="day-contents">24</div></td><td class="day calendar-day-2013-12-25"><div class="day-contents">25</div></td><td class="day calendar-day-2013-12-26"><div class="day-contents">26</div></td><td class="day calendar-day-2013-12-27"><div class="day-contents">27</div></td><td class="day calendar-day-2013-12-28"><div class="day-contents">28</div></td></tr><tr><td class="day calendar-day-2013-12-29"><div class="day-contents">29</div></td><td class="day calendar-day-2013-12-30"><div class="day-contents">30</div></td><td class="day calendar-day-2013-12-31"><div class="day-contents">31</div></td><td class="day adjacent-month next-month calendar-day-2014-01-01"><div class="day-contents">1</div></td><td class="day adjacent-month next-month calendar-day-2014-01-02"><div class="day-contents">2</div></td><td class="day adjacent-month next-month calendar-day-2014-01-03"><div class="day-contents">3</div></td><td class="day adjacent-month next-month calendar-day-2014-01-04"><div class="day-contents">4</div></td></tr></tbody></table></div></div>
+                </div>
+                <!---//End-calender---->
+                <!---start-contact-form--->
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="contact-form">
+                        <form>
+                            <hr /> @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <h3 align="center" style="color: white">Send Me A Message</h3>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Email.FromName, new { @class = "col-md-2 control-label" })
+                                <div class="text-box">
+                                    @Html.TextBoxFor(m => m.Email.FromName, new { @class = "form-control", placeholder = "First and Last Name" })
+                                    <span>@Html.ValidationMessageFor(m => m.Email.FromName)</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Email.FromEmail, new { @class = "col-md-2 control-label" })
+                                <div class="text-box">
+                                    @Html.TextBoxFor(m => m.Email.FromEmail, new { @class = "form-control", placeholder = "example@email.com" })
+                                    <span>@Html.ValidationMessageFor(m => m.Email.FromEmail)</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Email.Subject, new { @class = "col-md-2 control-label" })
+                                <div class="text-box">
+                                    @Html.TextBoxFor(m => m.Email.Subject, new { @class = "form-control", placeholder = "Subject" })
+                                    <span>@Html.ValidationMessageFor(m => m.Email.Subject)</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Email.Body, new { @class = "col-md-2 control-label" })
+                                <div class="text-box textarea-box">
+                                    <textarea rows="2" cols="70" @Html.TextBoxFor(m => m.Email.Body, new { @class = "text-box textarea-box", placeholder = "Your Message" })> </textarea>
+                                    <span>@Html.ValidationMessageFor(m => m.Email.Body)</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Send Message" />
+                                </div>
+                            </div>
+                        </form>
+                        <div />
+                    </div>
+                }
+                @*@using (Html.BeginForm())
+                {
+                @Html.AntiForgeryToken()
+                 <div class="contact-form">
+                   <form>
+                     <div class="text-box">
+                         <input type="text" value="Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Name';}">
+                         <input class="form-control" data-val="true" data-val-required="The Name field is required." id="Email_FromName" name="Email.FromName" type="text" value="Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Name';}">
+                         <span>@Html.ValidationMessageFor(m => m.Email.FromName)</span>
+                     </div>
+                     <div class="text-box">
+                         <input type="text" value="Email" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email';}">
+                         <input class="form-control" data-val="true" data-val-email="The Email field is not a valid e-mail address." data-val-required="The Email field is required." id="Email_FromEmail" name="Email.FromEmail" type="text" value="Email" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email';}">
+                         <span>@Html.ValidationMessageFor(m => m.Email.FromEmail)</span>
+                     </div>
+                     <div class="text-box">
+                         <input type="text" value="Subject" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Subject';}">
+                         <input class="form-control" data-val="true" data-val-required="The Subject field is required." id="Email_Subject" name="Email.Subject" value="Subject" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Subject';}">
+                         <span>@Html.ValidationMessageFor(m => m.Email.Subject)</span>
+                     </div>
+                     <div class="text-box textarea-box">
+                         <textarea rows="2" cols="70" onfocus="if(this.value == 'Your Message') this.value='';" onblur="if(this.value == '') this.value='Your Message';">Your Message</textarea>
+                         <textarea rows="2" cols="70" <input="" class="form-control" data-val="true" data-val-required="The Body field is required." id="Email_Body" name="Email.Body" placeholder="Your Message" type="text" value="">&gt; </textarea>
+                         <span>@Html.ValidationMessageFor(m => m.Email.Body)</span>
+                     </div>
+                     <input type="submit" value="Send Message" />
+                     </form>
+                 </div>
+                 }*@
+                <!---End-contact-form--->
+            </div>
+            <!---start-related-tags-social-icons---->
+            @*<div class="r-tags-social-icons">
+                <div class="related-tags">
+                    <ul>
+                        <li><a href="#">Technology</a></li>
+                        <li><a href="#">Club</a></li>
+                        <li><a href="#">Bussiness</a></li>
+                        <li><a href="#">Graphic</a></li>
+                        <li><a href="#">Burger</a></li>
+                        <li><a href="#">Communication</a></li>
+                        <li><a href="#">Design</a></li>
+                        <li><a href="#">Flat</a></li>
+                        <li><a href="#">Magazine</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                    <div class="clear"> </div>
+                </div>
+                <div class="big-social-icons">
+                    <ul>
+                        <li><a class="big-facebook" href="#"> <span>36,507 Fans</span></a></li>
+                        <li><a class="big-twitter" href="#"> <span>9,136 Followers</span></a></li>
+                        <li><a class="big-gplus" href="#"> <span>15,047 Fans</span></a></li>
+                    </ul>
+                </div>
+                <div class="clear"> </div>
+            </div>*@
+        </div>
+            <div class="clear"> </div>
+            <!---//End-related-tags-social-icons---->
+
+            <div class="clear"> </div>
+            <!---start-copy-right---->
+            <div class="copy-right">
+                <p>Made With Love By Justin Tisdale</p>
+            </div>
+            <!---END-copy-right---->
+        </div>
+    <!---//End-wrap---->
+</body>
+</html>
